@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { Produtos } from "./Produtos.js";
+import { Produtos, listaProdutos } from "./Produtos.js";
 
 const app = express();
 
@@ -16,21 +16,27 @@ app.use(cors());
 //Forma comum de codificar dados enviados em solicitações HTTP.
 //Usado quando os dados são enviados de um formulário HTML para uma API. 
 //Nesse formato, os dados são codificados como pares chave-valor, semelhantes aos parâmetros em uma URL.
-app.use(express.urlencoded({
-    extended : true,
-}),
-);
+app.use(express.urlencoded({ extended : true }));
 
-app.get("/",(req, res)=>{
-    let lista = ["bruno","reanto","wagner","ze","alan"]
-    return res.status(200).json(lista);
-});
-
-app.post("/novo",(req, res)=>{
-    const { id, descricao, preco } = req.body;
-    const produto = new Produtos(id,descricao,preco);
-    return res.status(200).json(produto)
+app.get("/produtos",(req, res)=>{
+    return res.status(200).json(listaProdutos)
 })
+
+app.post("/produtos/novo",(req,res)=>{
+    const { id, desc, preco, qtd } = req.body;
+    listaProdutos.push(new Produtos(id, desc, preco, qtd));
+    return res.status(200).json("cadastrado com sucesso!");
+})
+
+app.put("/produtos/alterar/:id",(req,res)=>{
+    const { id } = req.params;
+    const { desc, preco, qtd } = req.body;
+    let produto = listaProdutos.find(obj => obj.id == id)
+    produto.desc = desc;
+    produto.preco = preco;
+    produto.qtd = qtd;
+    return res.status(200).json("alterado com sucesso!");
+})  
 
 app.listen(3000,()=>{
     console.log("api no ar!");
