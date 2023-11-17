@@ -30,8 +30,8 @@ app.get("/produtos",(req, res)=>{
 })
 
 app.post("/produtos/novo",(req,res)=>{
-    const { id, desc, preco, qtd } = req.body;
-    listaProdutos.push(new Produto(id, desc, preco, qtd));
+    const { desc, preco, qtd } = req.body;
+    listaProdutos.push(new Produto(listaProdutos.length + 1, desc, preco, qtd));
     return res.status(200).json("cadastrado com sucesso!");
 })
 
